@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neon API Search</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #000;
+            color: #0affff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .box {
+            background: #080808;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 420px;
+            margin: auto;
+            box-shadow: 0 0 25px #00eaff66;
+            border: 1px solid #00faff;
+        }
+
+        h2 {
+            color: #00faff;
+            text-shadow: 0 0 15px #00eaff;
+            font-size: 26px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #00eaff;
+            background: #000;
+            color: #00faff;
+            font-size: 18px;
+            outline: none;
+            box-shadow: 0 0 15px #00eaff55;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            background: #00eaff;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+            text-shadow: 0 0 8px #fff;
+            box-shadow: 0 0 25px #00eaff;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            box-shadow: 0 0 40px #00faff;
+            transform: scale(1.04);
+        }
+
+        /* ★ Beautiful Neon Result Card */
+        #resultCard {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(#001418, #002b33);
+            border: 1px solid #00faff;
+            box-shadow: 0 0 25px #00eaff88;
+            animation: fadeIn 0.4s ease-out;
+            text-align: left;
+        }
+
+        .line {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-left: 3px solid #00eaff;
+            background: #00000088;
+            border-radius: 6px;
+            box-shadow: 0 0 10px #00eaff55;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🔍 Neon Worker Data Search</h2>
+
+    <input type="text" id="number" placeholder="Enter Number">
+    <button onclick="searchData()">SEARCH</button>
+
+    <div id="resultCard"></div>
+</div>
+
+<script>
+    function searchData() {
+        let num = document.getElementById("number").value;
+        let resultCard = document.getElementById("resultCard");
+
+        if (num === "") {
+            resultCard.style.display = "block";
+            resultCard.innerHTML = `<div class="line">⚠ Please enter a number!</div>`;
+            return;
+        }
+
+        resultCard.style.display = "block";
+        resultCard.innerHTML = `<div class="line">🔎 Searching...</div>`;
+
+        // ⭐ Your API
+        let apiURL = `https://kalyug-papa.vercel.app/api/info?num=${num}&key=papabolo`;
+
+        fetch(apiURL)
+            .then(response => response.text())
+            .then(data => {
+
+                let clean = data.replace(/\\n/g, "\n");
+
+                let formattedLines = clean
+                    .split("\n")
+                    .map(line => `<div class="line">${line}</div>`)
+                    .join("");
+
+                resultCard.innerHTML = formattedLines;
+            })
+            .catch(err => {
+                resultCard.innerHTML = `<div class="line">❌ API Error! Server not responding.</div>`;
+                console.log(err);
+            });
+    }
+</script>
+
+</body>
+</html>
